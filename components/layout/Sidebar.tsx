@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/Button"
@@ -8,52 +8,123 @@ import { useTheme } from "@/hooks/useTheme"
 import { useLanguage } from "@/hooks/useLanguage"
 // import { Menu, Sun, Moon, Globe, Home, FolderGit2, FileText, Mail, User } from 'lucide-react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
-  faHome, 
-  faFolderOpen, 
-  faNewspaper, 
-  faEnvelope, 
+import {
+  faHome,
+  faRocket,
+  faDesktop,
+  faEnvelope,
   faUser,
   faSun,
   faMoon,
   faGlobe,
-  faBars,
-  faRss
+  faRss,
+  faChevronLeft,
+  faClock,
+  faCloud,
+  faCode,  // 添加这个导入
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faGithub,
+  faReact,
+  faPython,
+  faDocker,
   faDiscord,
-  faBilibili
+  faBilibili,
+  faUnity,
+  faNode,
 } from '@fortawesome/free-brands-svg-icons'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import CardStack from '@/components/ui/CardStack'
+import { motion } from "framer-motion"
+// 添加 Popover 相关导入
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"  // 改为大写P的Popover
 
 interface SidebarProps {
   className?: string;
 }
 
+// 添加统计数类型
+interface StatItem {
+  label: string;
+  value: number;
+  max: number;
+  color: string;
+}
+
 const navigation = {
   zh: {
     home: { name: '首页', icon: faHome },
-    projects: { name: '项目', icon: faFolderOpen },
-    posts: { name: '文章', icon: faNewspaper },
+    projects: { name: '项目', icon: faRocket },
+    posts: { name: '文章', icon: faDesktop },
     contact: { name: '联系', icon: faEnvelope },
     about: { name: '关于', icon: faUser }
   },
   en: {
     home: { name: 'Home', icon: faHome },
-    projects: { name: 'Projects', icon: faFolderOpen },
-    posts: { name: 'Posts', icon: faNewspaper },
+    projects: { name: 'Projects', icon: faRocket },
+    posts: { name: 'Posts', icon: faDesktop },
     contact: { name: 'Contact', icon: faEnvelope },
     about: { name: 'About', icon: faUser }
   }
 }
 
+// 1. 将 techStacks 的声明移到文件前面
+const techStacks = [
+  {
+    id: 1,
+    tech1: {
+      icon: faPython,
+      name: "Python",
+      desc: "AI & Deep Learning"
+    },
+    tech2: {
+      icon: faDocker,
+      name: "Docker",
+      desc: "DevOps & Deploy"
+    }
+  },
+  {
+    id: 2,
+    tech1: {
+      icon: faReact,
+      name: "React/Next.js",
+      desc: "Web Development"
+    },
+    tech2: {
+      icon: faNode,
+      name: "Node.js",
+      desc: "Backend Services"
+    }
+  },
+  {
+    id: 3,
+    tech1: {
+      icon: faCode,  // 使用 faCode 替代 faCsharp
+      name: "C#",
+      desc: "Unity Scripts"
+    },
+    tech2: {
+      icon: faUnity,
+      name: "Unity",
+      desc: "Games Development"
+    }
+  },
+];
+
 export function Sidebar({ className }: SidebarProps) {
   const [expanded, setExpanded] = useState(true)
+  const [currentStatus, setCurrentStatus] = useState<number>(0)
   const { theme, setTheme } = useTheme()
   const { lang, setLang } = useLanguage()
   const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTechStacks, setCurrentTechStacks] = useState(techStacks)
 
   const socialLinks = [
     { icon: faGithub, href: 'https://github.com/Serendipity-zyf', label: 'GitHub' },
@@ -62,22 +133,111 @@ export function Sidebar({ className }: SidebarProps) {
     { icon: faRss, href: '/rss.xml', label: 'RSS Feed' },
   ]
 
+  const workStatuses = [
+    { id: 1, name: "休息", color: "bg-green-500", text: "休息中..." },
+    { id: 2, name: "开发", color: "bg-yellow-500", text: "正在开发个人博客..." },
+    { id: 3, name: "休假", color: "bg-red-500", text: "休假中..." },
+    { id: 4, name: "摸鱼", color: "bg-blue-500", text: "摸鱼中..." },
+  ]
+
+  const toggleStatus = () => {
+    setCurrentStatus((prev) => (prev + 1) % workStatuses.length)
+  }
+
+  // 定义统计数据
+  const stats: StatItem[] = [
+    {
+      label: "访问量",
+      value: 1234,
+      max: 2000,
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      label: "文章数",
+      value: 42,
+      max: 100,
+      color: "from-purple-500 to-pink-500"
+    }
+  ]
+
+  // 格式化时间的函数
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('zh-CN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    })
+  }
+
+  // 处理客户端渲染
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // 时间更新效果
+  useEffect(() => {
+    if (!mounted) return
+
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [mounted])
+
+  // 时间显示组件
+  const TimeDisplay = () => {
+    if (!mounted) return null
+
+    return (
+      <span className="text-sm font-medium">
+        {formatTime(currentTime)}
+      </span>
+    )
+  }
+
+  // Add handler for card clicks
+  const handleCardClick = () => {
+    setCurrentTechStacks(prev => {
+      const [first, ...rest] = prev;
+      return [...rest, first];
+    });
+  };
+
   return (
     <div className={cn(
       "relative border-r transition-all duration-300 flex flex-col",
       expanded ? "w-64" : "w-16",
+      "min-w-[4rem]",
       className
     )}>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute -right-4 top-4 h-8 w-8 rounded-full border shadow-md bg-background"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <FontAwesomeIcon icon={faBars} className="h-4 w-4" />
-      </Button>
+      <div className="flex items-center p-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-7 w-7",
+            "rounded-md",
+            "border shadow-sm",
+            "bg-background",
+            "hover:bg-accent hover:text-accent-foreground",
+            "transition-all duration-200"
+          )}
+          onClick={() => setExpanded(!expanded)}
+        >
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            className={cn(
+              "h-4 w-4",
+              "transition-transform duration-200",
+              expanded ? "" : "rotate-180"
+            )}
+          />
+        </Button>
+      </div>
 
-      <div className="flex-1 space-y-4 py-4">
+      <div className="flex-1 space-y-4">
         <div className="px-3 py-2">
           <div className="flex items-center justify-center mb-6">
             <Image
@@ -95,7 +255,7 @@ export function Sidebar({ className }: SidebarProps) {
             {Object.entries(navigation[lang as keyof typeof navigation]).map(([key, value]) => {
               const href = `/${key === 'home' ? '' : key}`
               const isActive = pathname === href
-              
+
               return (
                 <Link
                   key={key}
@@ -108,49 +268,199 @@ export function Sidebar({ className }: SidebarProps) {
                     !expanded && "justify-center px-2"
                   )}
                 >
-                  <FontAwesomeIcon 
-                    icon={value.icon} 
-                    className={cn("h-4 w-4", expanded && "mr-2")} 
+                  <FontAwesomeIcon
+                    icon={value.icon}
+                    className={cn("h-5 w-5", expanded && "mr-3")}
                   />
-                  {expanded && <span>{value.name}</span>}
+                  {expanded && <span className="leading-none">{value.name}</span>}
                 </Link>
               )
             })}
           </nav>
         </div>
+
+        <div className="px-3 py-2">
+          <CardStack
+            items={currentTechStacks}
+            offset={8}
+            scaleFactor={0.04}
+            expanded={expanded}
+            onCardClick={() => {
+              setCurrentTechStacks(prev => {
+                const [first, ...rest] = prev;
+                return [...rest, first];
+              });
+            }}
+          />
+
+          <motion.div
+            className={cn(
+              "mt-4 mx-0",
+              "bg-background/50 backdrop-blur-sm",
+              "transition-all duration-300",
+              "cursor-pointer",
+              expanded
+                ? "p-4 rounded-xl border"
+                : "w-10 h-10 rounded-lg border mx-auto flex items-center justify-center"
+            )}
+            onClick={toggleStatus}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {expanded ? (
+              <>
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    "w-2 h-2 rounded-full",
+                    workStatuses[currentStatus].color
+                  )} />
+                  <span className="text-sm text-muted-foreground">
+                    Status: {workStatuses[currentStatus].name}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm">{workStatuses[currentStatus].text}</p>
+              </>
+            ) : (
+              <div
+                className={cn(
+                  "w-2 h-2 rounded-full animate-pulse",
+                  workStatuses[currentStatus].color
+                )}
+              />
+            )}
+          </motion.div>
+
+          {/* 时间卡片 */}
+          {expanded ? (
+            <motion.div
+              className={cn(
+                "mt-4 mx-0",
+                "bg-background/50 backdrop-blur-sm",
+                "transition-all duration-300",
+                "p-4 rounded-xl border"
+              )}
+              whileHover={{ scale: 1.02 }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FontAwesomeIcon icon={faClock} className="h-4 w-4 text-primary" />
+                  <TimeDisplay />
+                </div>
+                <div className="flex items-center gap-2">
+                  <FontAwesomeIcon icon={faCloud} className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">23°C</span>
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <Popover>
+              <PopoverTrigger asChild>
+                <motion.div
+                  className={cn(
+                    "mt-4 mx-0",
+                    "bg-background/50 backdrop-blur-sm",
+                    "transition-all duration-300",
+                    "cursor-pointer",
+                    "w-10 h-10 rounded-lg border mx-auto flex items-center justify-center"
+                  )}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <FontAwesomeIcon icon={faClock} className="h-5 w-5 text-primary" />
+                </motion.div>
+              </PopoverTrigger>
+
+              <PopoverContent
+                className="w-auto p-4 bg-background/50 backdrop-blur-sm border rounded-xl"
+                align="start"
+                side="right"
+                sideOffset={5}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-2">
+                    <FontAwesomeIcon icon={faClock} className="h-4 w-4 text-primary" />
+                    <TimeDisplay />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FontAwesomeIcon icon={faCloud} className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium">23°C</span>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
       </div>
 
-      <div className="px-3 py-4 border-t">
-        <div className="flex gap-2 justify-center">
+      <div className="px-3 py-2">
+        {expanded && (
+          <div className="mb-4 px-4 space-y-3">
+            {stats.map((stat, index) => (
+              <div key={stat.label} className="space-y-1">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">{stat.label}</span>
+                  <span className="font-medium">{stat.value.toLocaleString()}</span>
+                </div>
+                <div className="relative h-2 w-full rounded-full bg-secondary/50">
+                  <motion.div
+                    className={cn(
+                      "absolute inset-y-0 left-0 rounded-full bg-gradient-to-r",
+                      stat.color
+                    )}
+                    initial={{ width: 0 }}
+                    animate={{
+                      width: `${(stat.value / stat.max) * 100}%`,
+                    }}
+                    transition={{
+                      duration: 1,
+                      delay: index * 0.2,
+                      ease: "easeOut"
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className={cn(
+          "flex gap-3",
+          expanded ? "flex-row" : "flex-col",
+          "justify-center items-center"
+        )}>
           <Button
             variant="ghost"
             size="icon"
-            className="hover:bg-accent hover:text-accent-foreground"
+            className="hover:bg-accent hover:text-accent-foreground w-6 h-6"
             onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
           >
-            <FontAwesomeIcon 
-              icon={theme === 'light' ? faSun : faMoon} 
-              className="h-5 w-5" 
+            <FontAwesomeIcon
+              icon={theme === 'light' ? faSun : faMoon}
+              className="h-5 w-5"
             />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="hover:bg-accent hover:text-accent-foreground"
+            className="hover:bg-accent hover:text-accent-foreground w-6 h-6"
             onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
           >
             <FontAwesomeIcon icon={faGlobe} className="h-5 w-5" />
           </Button>
         </div>
 
-        <div className="mt-4 flex justify-center gap-3">
+        <div className={cn(
+          "mt-4 flex gap-3",
+          expanded ? "flex-row" : "flex-col",
+          "justify-center items-center"
+        )}>
           {socialLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors w-6 h-6 flex items-center justify-center"
               title={link.label}
             >
               <FontAwesomeIcon icon={link.icon} className="h-5 w-5" />
