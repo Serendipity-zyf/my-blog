@@ -285,12 +285,7 @@ export function Sidebar({ className }: SidebarProps) {
             offset={8}
             scaleFactor={0.04}
             expanded={expanded}
-            onCardClick={() => {
-              setCurrentTechStacks(prev => {
-                const [first, ...rest] = prev;
-                return [...rest, first];
-              });
-            }}
+            onCardClick={handleCardClick}
           />
 
           <motion.div
