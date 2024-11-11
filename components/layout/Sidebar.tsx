@@ -43,6 +43,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"  // 改为大写P的Popover
+import StatBar from '@/components/ui/StatBar'  // 添加这行导入
 
 interface SidebarProps {
   className?: string;
@@ -54,6 +55,11 @@ interface StatItem {
   value: number;
   max: number;
   color: string;
+}
+
+interface Stats {
+  posts: number;
+  views: number;
 }
 
 const navigation = {
@@ -116,11 +122,6 @@ const techStacks = [
   },
 ];
 
-interface Stats {
-  posts: number;
-  views: number;
-}
-
 export function Sidebar({ className }: SidebarProps) {
   const [expanded, setExpanded] = useState(true)
   const [currentStatus, setCurrentStatus] = useState<number>(0)
@@ -130,10 +131,7 @@ export function Sidebar({ className }: SidebarProps) {
   const [mounted, setMounted] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [currentTechStacks, setCurrentTechStacks] = useState(techStacks)
-  const [stats, setStats] = useState<{ posts: number; views: number }>({
-    posts: 0,
-    views: 0
-  })
+  const [stats, setStats] = useState<Stats>({ posts: 0, views: 0 })
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -153,17 +151,17 @@ export function Sidebar({ className }: SidebarProps) {
     return () => clearInterval(interval)
   }, [])
 
-  const statsData = [
+  const statsData: StatItem[] = [
     {
       label: "访问量",
       value: stats.views,
-      max: Math.max(1000, stats.views * 1.2), // 动态最大值
+      max: Math.max(2000, stats.views),
       color: "from-blue-500 to-cyan-500"
     },
     {
       label: "文章数",
       value: stats.posts,
-      max: Math.max(50, stats.posts * 1.5), // 动态最大值
+      max: Math.max(100, stats.posts),
       color: "from-purple-500 to-pink-500"
     }
   ]
@@ -417,29 +415,13 @@ export function Sidebar({ className }: SidebarProps) {
         {expanded && (
           <div className="mb-4 px-4 space-y-3">
             {statsData.map((stat, index) => (
-              <div key={stat.label} className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">{stat.label}</span>
-                  <span className="font-medium">{stat.value.toLocaleString()}</span>
-                </div>
-                <div className="relative h-2 w-full rounded-full bg-secondary/50">
-                  <motion.div
-                    className={cn(
-                      "absolute inset-y-0 left-0 rounded-full bg-gradient-to-r",
-                      stat.color
-                    )}
-                    initial={{ width: 0 }}
-                    animate={{
-                      width: `${(stat.value / stat.max) * 100}%`,
-                    }}
-                    transition={{
-                      duration: 1,
-                      delay: index * 0.2,
-                      ease: "easeOut"
-                    }}
-                  />
-                </div>
-              </div>
+              <StatBar
+                key={index}
+                label={stat.label}
+                value={stat.value}
+                max={stat.max}
+                color={stat.color}
+              />
             ))}
           </div>
         )}
