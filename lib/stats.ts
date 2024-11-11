@@ -1,16 +1,16 @@
-import { createClient } from '@vercel/edge-config';
-
-const config = createClient(process.env.EDGE_CONFIG!);
+import { sql } from '@vercel/postgres';
 
 export async function getViewCount(): Promise<number> {
   try {
-    if (!config) {
-      console.warn('Edge Config not initialized');
-      return 0;
-    }
-
-    const views = await config.get<number>('views');
-    return views ?? 0;
+    // 从 views 表获取当前访问量
+    const result = await sql`
+      SELECT count FROM views WHERE id = 'total' LIMIT 1
+    `;
+    
+    // 如果没有记录，返回0
+    if (result.rows.length === 0) return 0;
+    
+    return result.rows[0].count;
   } catch (error) {
     console.error('Failed to get view count:', error);
     return 0;
@@ -19,15 +19,16 @@ export async function getViewCount(): Promise<number> {
 
 export async function incrementViewCount(): Promise<number | null> {
   try {
-    if (!config) {
-      console.warn('Edge Config not initialized');
-      return null;
-    }
-
-    const currentViews = await getViewCount();
-    // 注意：Edge Config 实际上并不支持直接的 set 操作
-    // 这里需要使用 Vercel KV 或其他存储解决方案来实现计数器功能
-    return currentViews;
+    // 使用 UPSERT 来更新或插入访问量
+    const result = await sql`
+      INSERT INTO views (id, count)
+      VALUES ('total', 1)
+      ON CONFLICT (id)
+      DO UPDATE SET count = views.count + 1
+      RETURNING count
+    `;
+    
+    return result.rows[0].count;
   } catch (error) {
     console.error('Failed to increment view count:', error);
     return null;
