@@ -116,6 +116,11 @@ const techStacks = [
   },
 ];
 
+interface Stats {
+  posts: number;
+  views: number;
+}
+
 export function Sidebar({ className }: SidebarProps) {
   const [expanded, setExpanded] = useState(true)
   const [currentStatus, setCurrentStatus] = useState<number>(0)
@@ -125,6 +130,43 @@ export function Sidebar({ className }: SidebarProps) {
   const [mounted, setMounted] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [currentTechStacks, setCurrentTechStacks] = useState(techStacks)
+  const [stats, setStats] = useState<{ posts: number; views: number }>({
+    posts: 0,
+    views: 0
+  })
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/stats')
+        if (!response.ok) throw new Error('Failed to fetch stats')
+        const data = await response.json()
+        setStats(data)
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    }
+
+    fetchStats()
+    // 可以设置定期刷新
+    const interval = setInterval(fetchStats, 60000) // 每分钟更新一次
+    return () => clearInterval(interval)
+  }, [])
+
+  const statsData = [
+    {
+      label: "访问量",
+      value: stats.views,
+      max: Math.max(1000, stats.views * 1.2), // 动态最大值
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      label: "文章数",
+      value: stats.posts,
+      max: Math.max(50, stats.posts * 1.5), // 动态最大值
+      color: "from-purple-500 to-pink-500"
+    }
+  ]
 
   const socialLinks = [
     { icon: faGithub, href: 'https://github.com/Serendipity-zyf', label: 'GitHub' },
@@ -143,22 +185,6 @@ export function Sidebar({ className }: SidebarProps) {
   const toggleStatus = () => {
     setCurrentStatus((prev) => (prev + 1) % workStatuses.length)
   }
-
-  // 定义统计数据
-  const stats: StatItem[] = [
-    {
-      label: "访问量",
-      value: 1234,
-      max: 2000,
-      color: "from-blue-500 to-cyan-500"
-    },
-    {
-      label: "文章数",
-      value: 42,
-      max: 100,
-      color: "from-purple-500 to-pink-500"
-    }
-  ]
 
   // 格式化时间的函数
   const formatTime = (date: Date) => {
@@ -390,7 +416,7 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="px-3 py-2">
         {expanded && (
           <div className="mb-4 px-4 space-y-3">
-            {stats.map((stat, index) => (
+            {statsData.map((stat, index) => (
               <div key={stat.label} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{stat.label}</span>

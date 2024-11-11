@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { incrementViewCount } from '@/lib/stats'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -19,11 +20,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
+  // 增加访问量
+  await incrementViewCount()
+
   return (
     <html lang="zh" suppressHydrationWarning>
       <body className={`${geistSans.variable} antialiased`}>
@@ -33,5 +37,5 @@ export default function RootLayout({
         </div>
       </body>
     </html>
-  );
+  )
 }
