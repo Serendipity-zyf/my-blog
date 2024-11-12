@@ -273,7 +273,7 @@ export function Sidebar({ className }: SidebarProps) {
             />
           </div>
           {expanded && (
-            <h2 className="mb-2 px-4 text-2xl font-semibold">PixelCookies</h2>
+            <h2 className="mb-2 px-4 text-2xl font-title">PixelCookies</h2>
           )}
           <nav className="space-y-1">
             {Object.entries(navigation[lang as keyof typeof navigation]).map(([key, value]) => {

@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { titleFont, bodyFont, codeFont, decorativeFont } from '@/lib/fonts'
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { incrementViewCount } from '@/lib/stats'
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "PixelCookies",
@@ -29,8 +23,8 @@ export default async function RootLayout({
   await incrementViewCount()
 
   return (
-    <html lang="zh" suppressHydrationWarning>
-      <body className={`${geistSans.variable} antialiased`}>
+    <html lang="zh" suppressHydrationWarning className={`${titleFont.variable} ${bodyFont.variable} ${codeFont.variable} ${decorativeFont.variable}`}>
+      <body className="font-body">
         <div className="flex min-h-screen">
           <Sidebar />
           <main className="flex-1 p-8">{children}</main>

@@ -9,6 +9,12 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+			title: ['var(--font-title)'],
+			body: ['var(--font-body)'],
+			code: ['var(--font-code)'],
+			decorative: ['var(--font-decorative)'],
+		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

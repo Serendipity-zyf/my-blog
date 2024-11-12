@@ -197,7 +197,7 @@ export default function CardStack({
             <span
               className={cn(
                 "absolute bottom-[-8px] right-[-8px]",
-                "text-3xl font-['Playball'] italic opacity-20", // 使用 Playball 字体
+                "text-3xl font-decorative italic opacity-20",
                 "select-none pointer-events-none",
                 hoveredIndex === index && "opacity-40"
               )}
