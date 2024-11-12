@@ -10,9 +10,7 @@ const config: Config = {
   theme: {
   	extend: {
 		fontFamily: {
-			title: ['var(--font-title)'],
-			body: ['var(--font-body)'],
-			code: ['var(--font-code)'],
+			sans: ['var(--font-body)'],
 			decorative: ['var(--font-decorative)'],
 		},
   		colors: {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { titleFont, bodyFont, codeFont, decorativeFont } from '@/lib/fonts'
+import { bodyFont, decorativeFont } from '@/lib/fonts'
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { incrementViewCount } from '@/lib/stats'
@@ -23,8 +23,8 @@ export default async function RootLayout({
   await incrementViewCount()
 
   return (
-    <html lang="zh" suppressHydrationWarning className={`${titleFont.variable} ${bodyFont.variable} ${codeFont.variable} ${decorativeFont.variable}`}>
-      <body className="font-body">
+    <html lang="en" className={`${bodyFont.variable} ${decorativeFont.variable}`}>
+      <body className="font-sans">
         <div className="flex min-h-screen">
           <Sidebar />
           <main className="flex-1 p-8">{children}</main>

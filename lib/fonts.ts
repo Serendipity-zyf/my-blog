@@ -1,16 +1,10 @@
 import localFont from 'next/font/local'
 
-// 主标题字体
-export const titleFont = localFont({
-  src: '../public/fonts/SmileySans-Oblique.ttf',
-  variable: '--font-title'
-})
-
-// 正文字体
+// 主字体 - Plus Jakarta Sans
 export const bodyFont = localFont({
   src: [
     {
-      path: '../public/fonts/PlusJakartaSans-VariableFont_wght.ttf',
+      path: '../public/fonts/PlusJakartaSans-Regular.ttf',
       weight: '400',
       style: 'normal',
     },
@@ -28,13 +22,7 @@ export const bodyFont = localFont({
   variable: '--font-body'
 })
 
-// 代码字体
-export const codeFont = localFont({
-  src: '../public/fonts/Monaco.ttf',
-  variable: '--font-code'
-})
-
-// 装饰字体
+// 装饰字体 - Playball
 export const decorativeFont = localFont({
   src: '../public/fonts/Playball-Regular.ttf',
   variable: '--font-decorative'
