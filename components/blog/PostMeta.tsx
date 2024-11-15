@@ -1,10 +1,4 @@
-import { CalendarIcon, ClockIcon, TagIcon } from 'lucide-react'
-
-interface PostMetaProps {
-    date: string
-    readingTime?: number
-    tags?: string[]
-}
+'use client'
 
 interface PostMetaProps {
     date: string
