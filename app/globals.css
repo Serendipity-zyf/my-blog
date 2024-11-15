@@ -77,3 +77,49 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* 添加 Prism 主题 */
+@import 'prism-themes/themes/prism-one-dark.css';
+
+/* 自定义代码块样式 */
+pre {
+  @apply p-4 rounded-lg overflow-x-auto;
+}
+
+code {
+  @apply text-sm;
+}
+
+/* 文章内容的响应式宽度 */
+.prose {
+  @apply max-w-none;
+}
+
+.prose pre {
+  @apply border border-border bg-muted;
+}
+
+/* 暗色模式适配 */
+.dark .prose {
+  @apply prose-invert;
+}
+
+/* 使文章中的图片响应式 */
+.prose img {
+  @apply rounded-lg;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 图片容器 */
+.animated-image-wrapper {
+  @apply my-8;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 加载动画 */
+.loading-spinner {
+  @apply w-8 h-8 border-4 border-muted-foreground/20 border-t-primary rounded-full animate-spin;
+}

@@ -59,9 +59,43 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		typography: {
+  			DEFAULT: {
+  				css: {
+  					'code::before': {
+  						content: '""'
+  					},
+  					'code::after': {
+  						content: '""'
+  					},
+  					'blockquote p:first-of-type::before': {
+  						content: '""'
+  					},
+  					'blockquote p:last-of-type::after': {
+  						content: '""'
+  					},
+  					img: {
+  						borderRadius: '8px',
+  					},
+  					code: {
+  						backgroundColor: 'rgb(var(--muted))',
+  						borderRadius: '4px',
+  						padding: '2px 4px',
+  						fontWeight: '500',
+  					},
+  					'pre code': {
+  						backgroundColor: 'transparent',
+  						padding: '0',
+  					},
+  				}
+  			}
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require("tailwindcss-animate")
+  ],
 };
 export default config;
