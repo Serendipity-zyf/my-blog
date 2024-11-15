@@ -3,7 +3,15 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 
-export default function ClientPosts({ posts }: { posts: any[] }) {
+interface Post {
+    slug: string
+    title: string
+    date: string
+    tags?: string[]
+    category?: string
+}
+
+export default function ClientPosts({ posts }: { posts: Post[] }) {
     return (
         <div className="container mx-auto px-4 py-8">
             <motion.h1

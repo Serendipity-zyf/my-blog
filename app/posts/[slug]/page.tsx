@@ -49,7 +49,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
                 </div>
             </div>
         )
-    } catch (error) {
+    } catch (_error) {
         return (
             <div className="container mx-auto px-4 py-8">
                 <h1 className="text-2xl font-bold text-red-500">文章未找到</h1>

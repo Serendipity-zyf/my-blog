@@ -1,27 +1,32 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface ImageProps {
     src: string
     alt: string
+    width?: number
+    height?: number
+    className?: string
 }
 
-export function Image({ src, alt, className, ...props }: ImageProps) {
+export function CustomImage({ src, alt, width = 800, height = 400, className }: ImageProps) {
     const [isLoaded, setIsLoaded] = useState(false)
 
     return (
-        <img
+        <Image
             src={src}
             alt={alt}
+            width={width}
+            height={height}
             className={cn(
                 'transition-opacity duration-300',
                 isLoaded ? 'opacity-100' : 'opacity-0',
                 className
             )}
-            onLoad={() => setIsLoaded(true)}
-            {...props}
+            onLoadingComplete={() => setIsLoaded(true)}
         />
     )
 } 

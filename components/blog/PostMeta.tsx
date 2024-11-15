@@ -6,6 +6,12 @@ interface PostMetaProps {
     tags?: string[]
 }
 
+interface PostMetaProps {
+    date: string
+    readingTime?: number
+    tags?: string[]
+}
+
 export function PostMeta({ date, readingTime, tags }: PostMetaProps) {
     return (
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">

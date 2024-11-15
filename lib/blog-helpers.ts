@@ -27,19 +27,24 @@ export function extractTableOfContents(content: string) {
 }
 
 // 获取所有标签
-export function getAllTags(posts: any[]) {
-  const tags = new Set<string>();
-  posts.forEach(post => {
-    post.tags?.forEach((tag: string) => tags.add(tag));
-  });
-  return Array.from(tags);
+interface Post {
+    tags?: string[]
+    category?: string
+}
+
+export function getAllTags(posts: Post[]) {
+    const tags = new Set<string>()
+    posts.forEach(post => {
+        post.tags?.forEach(tag => tags.add(tag))
+    })
+    return Array.from(tags)
 }
 
 // 获取所有分类
-export function getAllCategories(posts: any[]) {
-  const categories = new Set<string>();
-  posts.forEach(post => {
-    if (post.category) categories.add(post.category);
-  });
-  return Array.from(categories);
+export function getAllCategories(posts: Post[]) {
+    const categories = new Set<string>()
+    posts.forEach(post => {
+        if (post.category) categories.add(post.category)
+    })
+    return Array.from(categories)
 } 
