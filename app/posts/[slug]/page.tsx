@@ -3,6 +3,7 @@ import { TableOfContents } from '@/components/blog/TableOfContents'
 import { PostMeta } from '@/components/blog/PostMeta'
 import { PostContent } from '@/components/blog/PostContent'
 import Link from 'next/link'
+import { Comments } from '@/components/blog/Comments'
 
 export async function generateStaticParams() {
     const posts = await getAllPosts()
@@ -18,25 +19,29 @@ export default async function PostPage({ params }: { params: { slug: string } })
         return (
             <div className="container mx-auto px-4 max-w-8xl">
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8">
-                    <article className="prose prose-zinc dark:prose-invert
-                        prose-headings:font-bold
-                        prose-h1:text-4xl
-                        prose-h2:text-3xl
-                        prose-h3:text-2xl
-                        prose-p:text-justify
-                        prose-img:rounded-lg
-                        max-w-none">
-                        <div className="mb-8">
-                            <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-                            <PostMeta
-                                date={post.date}
-                                readingTime={post.readingTime}
-                                tags={post.tags}
-                            />
-                        </div>
+                    <div>
+                        <article className="prose prose-zinc dark:prose-invert
+                            prose-headings:font-bold
+                            prose-h1:text-4xl
+                            prose-h2:text-3xl
+                            prose-h3:text-2xl
+                            prose-p:text-justify
+                            prose-img:rounded-lg
+                            max-w-none">
+                            <div className="mb-8">
+                                <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+                                <PostMeta
+                                    date={post.date}
+                                    readingTime={post.readingTime}
+                                    tags={post.tags}
+                                />
+                            </div>
 
-                        <PostContent content={post.content} />
-                    </article>
+                            <PostContent content={post.content} />
+
+                            <Comments />
+                        </article>
+                    </div>
 
                     <aside className="hidden lg:block">
                         <div className="sticky top-8 space-y-8">

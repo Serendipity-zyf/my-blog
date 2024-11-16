@@ -1,5 +1,7 @@
 'use client'
 
+import { Clock } from 'lucide-react'
+
 interface PostMetaProps {
     date: string
     readingTime?: number
@@ -20,7 +22,10 @@ export function PostMeta({ date, readingTime, tags }: PostMetaProps) {
             </div>
             {readingTime && (
                 <div className="flex items-center gap-1">
-                    <span>{readingTime} 分钟阅读</span>
+                    <span className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        {readingTime} 分钟阅读
+                    </span>
                 </div>
             )}
             {tags && tags.length > 0 && (
