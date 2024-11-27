@@ -48,20 +48,20 @@ DNS（域名系统）就像互联网的“电话簿”：人们访问网站时�
 
 1. 将准备好的国内域名加入 Cloudflare Websites，并选择免费计划。
 
-   <img src="../public/images/doc_1_1.png" alt="步骤1" style="width: 60%;" />
-   <img src="../public/images/doc_1_2.png" alt="步骤2" style="width: 60%;" />
+   <img src="/images/doc_1_1.png" alt="步骤1" style="width: 60%;" />
+   <img src="/images/doc_1_2.png" alt="步骤2" style="width: 60%;" />
 
 2. 在“名称”处填写你的域名，在“IPv4”处填写 "76.223.126.88"，并保存。假如只有 CNAME，那就选择 CNAME，名称写自己的域名，内容写 xxxxx.vercel.app；然后再添加一个新的 CNAME，名称写 “www”，内容还是 xxxxx.vercel.app。这第二个添加是为了实现能通过 www.你的域名来访问。
 
-   <img src="../public/images/doc_1_3.png" alt="步骤3" style="width: 60%;" />
+   <img src="/images/doc_1_3.png" alt="步骤3" style="width: 60%;" />
 
 3. 将 Cloudflare 分配给你的名称服务器，复制粘贴到阿里云后台的 DNS 修改 - DNS 服务器。修改后，等待 Cloudflare 检查是否完成。
 
-   <img src="../public/images/doc_1_4.png" alt="步骤4" style="width: 60%;" />
+   <img src="/images/doc_1_4.png" alt="步骤4" style="width: 60%;" />
 
 4. 完成后，选择 SSL/TLS--概述，配置 SSL -- 完全（严格），否则可能因重定向过多而无法打开。
 
-   <img src="../public/images/doc_1_5.png" alt="步骤5" style="width: 60%;" />
+   <img src="/images/doc_1_5.png" alt="步骤5" style="width: 60%;" />
 
 5. 然后返回 Vercel，在 Settings -- Domains 中添加你的域名即可，选择第一个 Recommend 即可。
 

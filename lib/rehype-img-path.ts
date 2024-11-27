@@ -7,7 +7,7 @@ export function rehypeImgPath() {
       if (node.tagName === 'img') {
         const src = node.properties?.src as string
         if (src && !src.startsWith('http')) {
-          node.properties.src = src.replace('../public/images/', '/images/')
+          node.properties.src = src
         }
       }
     })
