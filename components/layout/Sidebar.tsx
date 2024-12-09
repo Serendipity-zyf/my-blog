@@ -263,12 +263,12 @@ export function Sidebar({ className }: SidebarProps) {
 
       <div className="flex-1 space-y-4">
         <div className="px-3 py-2">
-          <div className="flex items-center justify-center mb-6">
+          <div className="flex items-center justify-center mb-1">
             <Image
-              src="/img/my-logo.svg"
+              src="/img/aibala.png"
               alt="PixelCookies Logo"
-              width={expanded ? 100 : 32}
-              height={expanded ? 100 : 32}
+              width={expanded ? 180 : 32}
+              height={expanded ? 180 : 32}
               className="rounded-full"
             />
           </div>
